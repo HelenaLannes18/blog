@@ -1,0 +1,129 @@
+---
+author: Helena
+description: Integrating mindfulness practices helps developers cultivate present-moment awareness, fostering focus, problem-solving, and work-life balance.
+image: charlesdeluvio-cZr2sgaxy3Q-unsplash.jpg
+isPublished: true
+publishedAt: 2025-01-01T13:00:00Z
+slug: building-progressive-web-apps-bridging-the-gap-between-web-and-mobile
+tags:
+  - web development
+title: 'ModeloIA_Regressiva Web Apps: Bridging the Gap Between Web and Mobile'
+updatedAt: 2025-01-01T13:00:00Z
+---
+
+O projeto ModeloIA_Regressiva.ipynb tem como objetivo demonstrar o funcionamento de um sistema de aprendizado de máquina para resolver problemas de regressão utilizando a biblioteca PyTorch. O projeto é estruturado de forma que os usuários possam entender e aplicar conceitos de regressão em diferentes cenários, desde a criação de equações personalizadas até a avaliação de modelos em datasets reais.
+
+## Objetivos do Projeto
+Definir uma Equação Personalizada:
+- O usuário pode criar uma equação matemática com múltiplas variáveis.
+- As variáveis têm valores gerados aleatoriamente dentro de limites definidos.
+
+Gerar um Dataset Sintético:
+- Um conjunto de dados é criado, onde cada linha representa os valores das variáveis e o resultado da equação.
+- O tamanho do dataset e os limites das variáveis são configuráveis diretamente no código.
+
+Treinar um Modelo de Regressão:
+- O modelo utiliza os valores das variáveis como entrada e tenta prever o resultado da equação como saída.
+- Os dados são divididos em conjuntos de treino e teste, com proporções ajustáveis.
+- Durante o treinamento, o modelo ajusta seus pesos para minimizar o erro de predição (função de perda).
+
+Avaliar o Modelo:
+- O desempenho do modelo é avaliado usando o conjunto de teste.
+- A métrica utilizada é o erro médio quadrático (MSE), que mede a diferença entre as previsões do modelo e os valores reais.
+
+Comparar Resultados:
+- O usuário pode fornecer manualmente valores para as variáveis e comparar o resultado previsto pelo modelo com o resultado exato da equação.
+- Isso ajuda a entender o quão bem o modelo aprendeu o comportamento da equação.
+
+Testar em um Dataset sem Equação Definida:
+- Com um dataset real, mas sem uma equação definida, o modelo é testado para verificar se é capaz de fazer predições mesmo em casos sem uma relação matemática explícita.
+
+## Implementação do Projeto
+Definição dos Parâmetros das Variáveis:
+O projeto começa com a definição dos parâmetros das variáveis, como o número de variáveis e os limites inferior e superior para os valores que elas podem assumir. Esses parâmetros são configuráveis e afetam diretamente a complexidade do problema.
+
+```python
+num_variaveis = 3  # Quantidade de variáveis
+limite_inferior = 1  # Limite inferior para os valores das variáveis
+limite_superior = 10  # Limite superior para os valores das variáveis
+```
+
+## Equação Personalizada
+A equação que define a relação entre as variáveis é criada pelo usuário. No exemplo, a equação é uma função quadrática simples:
+
+```python { 1-3,4= }
+def equacao(variaveis):
+    return (variaveis[0]**2 - variaveis[1]*variaveis[2])
+```
+
+## Geração do Dataset Sintético
+Um dataset sintético é gerado com base na equação definida. O número de linhas do dataset também é configurável:
+
+```python
+num_linhas = 1000  # Número de linhas da tabela
+```
+
+## Treinamento do Modelo
+O modelo de regressão é treinado utilizando PyTorch. O processo de treinamento envolve a definição de uma rede neural com camadas ocultas e a aplicação de uma função de perda (MSE) para ajustar os pesos do modelo.
+
+```python
+class Regressor(nn.Module):
+    def __init__(self, input_dim):
+        super(Regressor, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(input_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64, 1)
+```
+
+## Avaliação do Modelo
+Após o treinamento, o modelo é avaliado no conjunto de teste. O desempenho é medido usando o erro médio quadrático (MSE) e o coeficiente de determinação (R²).
+
+```python
+model.eval()
+with torch.no_grad():
+    predictions = model(X_test_tensor)
+    test_loss = criterion(predictions, y_test_tensor)
+```
+
+## Comparação com Valores Manuais
+O usuário pode fornecer valores manualmente para as variáveis e comparar o resultado previsto pelo modelo com o resultado exato da equação.
+
+```python
+valores_usuario = [12, 8.0, 3.0]
+resultado_esperado = equacao(valores_usuario)
+predicao_modelo = model(valores_usuario_tensor).item()
+```
+
+## Aplicação em Dataset Real
+O projeto também inclui a aplicação do modelo em um dataset real de preços de imóveis. O objetivo é prever o preço das casas com base em diversas variáveis, como tamanho do lote, qualidade dos acabamentos, ano de construção, entre outras.
+
+```python
+df = pd.read_csv("house_prices/train.csv")
+df = df.select_dtypes(include=['number'])
+df.fillna(df.median(), inplace=True)
+```
+
+## Treinamento e Inferência
+O modelo é treinado no dataset de preços de imóveis e, em seguida, é feita a inferência em novos dados para avaliar o desempenho.
+
+```python
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+modelo = LinearRegression()
+modelo.fit(X_train, y_train)
+```
+
+## Comparação entre Regressão Linear e Regressão Polinomial
+O projeto também compara a eficácia da regressão linear simples com a regressão polinomial. A regressão linear se mostrou mais eficaz para o dataset de preços de imóveis, com um erro médio absoluto (MAE) muito menor em comparação com a regressão polinomial.
+
+```python
+mae_inferencia = np.mean(np.abs(y_pred_inferencia - y_real))
+print(f"Erro Médio Absoluto (MAE) na Inferência: ${mae_inferencia:.2f}")
+```
+
+## Conclusão
+O projeto ModeloIA_Regressiva.ipynb é uma excelente introdução ao uso de modelos de regressão em aprendizado de máquina. Ele permite que os usuários explorem desde a criação de equações simples até a aplicação de modelos complexos em datasets reais. A comparação entre regressão linear e polinomial também oferece insights valiosos sobre a escolha do modelo adequado para diferentes tipos de dados.
+
+Para aqueles que desejam aprofundar seus conhecimentos em aprendizado de máquina, este projeto é um ótimo ponto de partida, oferecendo uma visão prática e aplicada dos conceitos de regressão.

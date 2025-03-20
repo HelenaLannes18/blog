@@ -1,0 +1,138 @@
+---
+author: Helena
+description: How to deploy your Next.js apps on Vercel.
+image: roman-synkevych-vXInUOv1n84-unsplash.jpg
+isPublished: true
+publishedAt: 2024-05-08T13:00:00Z
+slug: best-practices-for-writing-clean-and-maintainable-code
+tags:
+  - code quality
+title: Eikonal
+updatedAt: 2024-05-08T13:00:00Z
+---
+
+O projeto Trabalho 2 Seminário em Computação V tem como foco a implementação e análise da Equação de Eikonal, uma equação diferencial parcial não linear de primeira ordem que descreve a propagação de ondas em meios heterogêneos. A equação de Eikonal é amplamente utilizada em áreas como óptica geométrica, geofísica, acústica e neurociência, sendo fundamental para modelar fenômenos como a propagação de ondas sísmicas, luz e sinais elétricos.
+
+## Contexto e Objetivos
+
+A equação de Eikonal é representada por:
+
+∣∇u(x)∣=n(x)
+
+onde x está em um subconjunto aberto de R^n, n(x) é uma função positiva que representa o índice de refração do meio, ∇ denota o gradiente, e ∣⋅∣ é a norma euclidiana. A solução u(x) descreve o tempo de chegada de uma onda em um ponto
+x.
+
+## O objetivo deste projeto é:
+
+- Implementar a Equação de Eikonal Anisotrópica utilizando a biblioteca FEniCSx, uma ferramenta poderosa para a solução numérica de equações diferenciais parciais (EDPs) com o método dos elementos finitos.
+- Resolver a equação em um domínio bidimensional, considerando condições de contorno e propriedades anisotrópicas do meio.
+- Visualizar os resultados para analisar a distribuição do tempo de chegada tdep no domínio.
+
+## Implementação no FEniCSx
+
+### Preparação do Ambiente
+
+O projeto utiliza o FEniCSx, uma biblioteca de alto desempenho para a solução numérica de EDPs. O ambiente foi configurado no Google Colab, com a instalação das dependências necessárias, como mpi4py, petsc4py, slepc4py, e pyvista para visualização.
+
+```python
+# Instalação do FEniCSx no Google Colab
+try:
+    import dolfinx
+except ImportError:
+    !wget "https://fem-on-colab.github.io/releases/fenicsx-install-release-real.sh" -O "/tmp/fenicsx-install.sh"
+    !bash "/tmp/fenicsx-install.sh"
+    import dolfinx
+```
+
+### Definição do Problema
+
+O domínio do problema é um quadrado unitário discretizado em uma malha triangular com 500x500 elementos. O espaço de funções é definido utilizando elementos de Lagrange de primeira ordem.
+
+```python
+# Criação da malha e do espaço de funções
+comm = MPI.COMM_WORLD
+domain = mesh.create_unit_square(comm, 500, 500, mesh.CellType.triangle)
+V = functionspace(domain, ("Lagrange", 1))
+```
+
+### Condições de Contorno
+
+As condições de contorno são definidas como Dirichlet, com valor zero nas fronteiras do domínio. O ponto de início da propagação pode ser ajustado modificando a função `boundary_marker`.
+
+```python
+# Definição das condições de contorno
+def boundary_marker(x):
+    return np.isclose(x[0], 0.0) & np.isclose(x[1], 0.0)  # Início da propagação no ponto (0,0)
+
+boundary_dofs = fem.locate_dofs_geometrical(V, boundary_marker)
+bc_value = fem.Constant(domain, 0.0)
+bc = fem.dirichletbc(bc_value, boundary_dofs, V)
+```
+
+### Formulação Variacional
+
+A formulação variacional da equação é implementada utilizando funções de teste e trial do espaço de funções
+V.
+
+```python
+# Função incógnita
+t_dep = fem.Function(V)
+v = ufl.TestFunction(V)
+
+# Norma anisotrópica
+grad_t = grad(t_dep)
+norm_aniso = ufl.sqrt(dot(M * grad_t, grad_t) + 1e-8)
+
+# Definição da equação variacional
+F = (c_f * norm_aniso - 1) * v * dx + k_0 * dot(M * grad_t, grad(v)) * dx
+```
+
+### Solução Numérica
+
+O sistema não linear é resolvido utilizando o método de Newton, com tolerâncias ajustadas para garantir a convergência.
+
+```python
+# Resolução do sistema não linear
+problem_nl = NonlinearProblem(F, t_dep, bcs=[bc], J=J)
+newton_solver = NewtonSolver(domain.comm, problem_nl)
+newton_solver.atol = 1e-8
+newton_solver.rtol = 1e-6
+newton_solver.max_it = 50
+
+n_iter, converged = newton_solver.solve(t_dep)
+print(f"Solver convergiu? {converged} em {n_iter} iterações")
+```
+
+### Visualização dos Resultados
+
+Os resultados são visualizados utilizando matplotlib e pyvista, permitindo a análise da distribuição do tempo de chegada tdep no domínio.
+
+```python
+# Visualização com matplotlib
+plt.figure(figsize=(6, 5))
+plt.tricontourf(points[:, 0], points[:, 1], values, levels=20, cmap="coolwarm")
+plt.colorbar(label="t_dep")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Distribuição de t_dep")
+plt.show()
+
+# Visualização com pyvista
+u_topology, u_cell_types, u_geometry = plot.vtk_mesh(V)
+u_grid = pyvista.UnstructuredGrid(u_topology, u_cell_types, u_geometry)
+u_grid.point_data["t_dep"] = t_dep.x.array.real
+u_grid.set_active_scalars("t_dep")
+
+u_plotter = pyvista.Plotter(notebook=True)
+u_plotter.add_mesh(u_grid, cmap="jet")
+u_plotter.view_xy()
+u_plotter.show(jupyter_backend="html")
+```
+
+### Conclusão
+
+Este projeto demonstra a aplicação da Equação de Eikonal Anisotrópica para modelar a propagação de ondas em meios heterogêneos. A implementação no FEniCSx permitiu a solução numérica eficiente, enquanto a visualização com matplotlib e pyvista facilitou a análise dos resultados. O trabalho destaca a importância da escolha adequada de parâmetros, como a velocidade de propagação e a matriz de anisotropia, para capturar o comportamento físico do fenômeno estudado.
+
+Para futuros trabalhos, sugere-se a exploração de diferentes condições de contorno, matrizes de anisotropia e a aplicação do modelo em problemas reais, como a propagação de ondas sísmicas em diferentes tipos de rochas ou a modelagem de sinais elétricos em tecidos biológicos.
+
+Este projeto foi desenvolvido como parte do Seminário em Computação V, sob a orientação do professor responsável pela disciplina. Para mais detalhes sobre o código e a implementação, consulte o repositório do projeto ou entre em contato com o autor.

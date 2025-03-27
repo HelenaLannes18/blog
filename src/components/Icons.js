@@ -1,5 +1,5 @@
-import React from "react";
-import { cx } from "../utils";
+import React from 'react';
+import { cx } from '../utils';
 
 export const SunIcon = ({ className, ...rest }) => (
   <svg
@@ -8,7 +8,7 @@ export const SunIcon = ({ className, ...rest }) => (
     height="24"
     viewBox="0 0 24 24"
     {...rest}
-    className={cx("w-full h-auto", className)}
+    className={cx('w-full h-auto', className)}
   >
     <rect x="0" y="0" width="24" height="24" fill="rgba(255, 255, 255, 0)" />
     <g
@@ -85,7 +85,7 @@ export const SunIcon = ({ className, ...rest }) => (
       strokeLinejoin="round"
       strokeWidth="2"
     >
-      <path d="M7 6 C7 12.08 11.92 17 18 17 C18.53 17 19.05 16.96 19.56 16.89 C17.95 19.36 15.17 21 12 21 C7.03 21 3 16.97 3 12 C3 8.83 4.64 6.05 7.11 4.44 C7.04 4.95 7 5.47 7 6 Z" />
+      <path d="M7 6 C7 12.08 11.92 17 18 17 C18.53 17 19.03 16.96 19.56 16.89 C17.95 19.36 15.17 21 12 21 C7.03 21 3 16.97 3 12 C3 8.83 4.64 6.03 7.11 4.44 C7.04 4.95 7 5.47 7 6 Z" />
       <set attributeName="opacity" begin="0.6s" to="0" />
     </g>
     <mask id="lineMdMoonFilledToSunnyFilledLoopTransition0">
@@ -164,7 +164,7 @@ export const MoonIcon = ({ className, ...rest }) => (
     height="24"
     viewBox="0 0 24 24"
     {...rest}
-    className={cx("w-full h-auto", className)}
+    className={cx('w-full h-auto', className)}
   >
     <g
       fill="none"
@@ -194,7 +194,7 @@ export const MoonIcon = ({ className, ...rest }) => (
       </g>
       <path
         fill="currentColor"
-        d="M7 6 C7 12.08 11.92 17 18 17 C18.53 17 19.05 16.96 19.56 16.89 C17.95 19.36 15.17 21 12 21 C7.03 21 3 16.97 3 12 C3 8.83 4.64 6.05 7.11 4.44 C7.04 4.95 7 5.47 7 6 Z"
+        d="M7 6 C7 12.08 11.92 17 18 17 C18.53 17 19.03 16.96 19.56 16.89 C17.95 19.36 15.17 21 12 21 C7.03 21 3 16.97 3 12 C3 8.83 4.64 6.03 7.11 4.44 C7.04 4.95 7 5.47 7 6 Z"
         opacity="0"
       >
         <set attributeName="opacity" begin="0.5s" to="1" />
@@ -342,7 +342,7 @@ export const LinkedinIcon = ({ className, ...rest }) => {
       width={42}
       height={43}
       viewBox="0 0 42 43"
-      className={cx("w-full h-auto", className)}
+      className={cx('w-full h-auto', className)}
       {...rest}
     >
       <g clipPath="url(#a)">
@@ -371,13 +371,13 @@ export const TwitterIcon = ({ className, ...rest }) => {
       width={42}
       height={43}
       viewBox="0 0 42 43"
-      className={cx("w-full h-auto", className)}
+      className={cx('w-full h-auto', className)}
       {...rest}
     >
       <g clipPath="url(#a)">
         <path
           fill="#1D9BF0"
-          d="M37.7 13.24c.026.37.026.74.026 1.114 0 11.386-8.668 24.517-24.518 24.517v-.006A24.394 24.394 0 0 1 0 35.002a17.303 17.303 0 0 0 12.753-3.571 8.627 8.627 0 0 1-8.05-5.984 8.584 8.584 0 0 0 3.89-.149 8.617 8.617 0 0 1-6.912-8.446v-.11a8.562 8.562 0 0 0 3.91 1.08A8.627 8.627 0 0 1 2.926 6.315a24.457 24.457 0 0 0 17.758 9.002 8.622 8.622 0 0 1 2.494-8.233 8.626 8.626 0 0 1 12.19.374 17.29 17.29 0 0 0 5.473-2.092 8.649 8.649 0 0 1-3.788 4.766A17.135 17.135 0 0 0 42 8.776a17.504 17.504 0 0 1-4.3 4.464Z"
+          d="M37.7 13.24c.026.37.026.74.026 1.114 0 11.386-8.668 24.517-24.518 24.517v-.006A24.394 24.394 0 0 1 0 35.002a17.303 17.303 0 0 0 12.753-3.571 8.627 8.627 0 0 1-8.03-5.984 8.584 8.584 0 0 0 3.89-.149 8.617 8.617 0 0 1-6.912-8.446v-.11a8.562 8.562 0 0 0 3.91 1.08A8.627 8.627 0 0 1 2.926 6.315a24.457 24.457 0 0 0 17.758 9.002 8.622 8.622 0 0 1 2.494-8.233 8.626 8.626 0 0 1 12.19.374 17.29 17.29 0 0 0 5.473-2.092 8.649 8.649 0 0 1-3.788 4.766A17.135 17.135 0 0 0 42 8.776a17.504 17.504 0 0 1-4.3 4.464Z"
         />
       </g>
       <defs>
@@ -396,7 +396,7 @@ export const GithubIcon = ({ className, ...rest }) => {
       width={42}
       height={44}
       viewBox="0 0 42 44"
-      className={cx("w-full h-auto", className)}
+      className={cx('w-full h-auto', className)}
       {...rest}
     >
       <path
@@ -416,7 +416,7 @@ export const DribbbleIcon = ({ className, ...rest }) => {
       width={42}
       height={43}
       viewBox="0 0 42 43"
-      className={cx("w-full h-auto", className)}
+      className={cx('w-full h-auto', className)}
       {...rest}
     >
       <g clipPath="url(#a)">

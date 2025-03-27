@@ -1,0 +1,37 @@
+---
+author: Fisiocomp
+description: Get a detailed comparison of three popular JavaScript frameworks - Angular, React, and Vue.js. Understand the strengths, weaknesses, and use cases for each framework to make an informed decision for your next web development project.
+image: paul-esch-laurent-oZMUrWFHOB4-unsplash.jpg
+isPublished: true
+publishedAt: 2024-11-12T13:00:00Z
+slug: introducao-ao-numba-e-resolucao-de-equacoes-diferenciais
+tags:
+  - numba
+  - IA
+title: Introdução ao Numba e Resolução de Equações Diferenciais
+updatedAt: 2024-11-12T13:00:00Z
+---
+
+A resolução de equações diferenciais é essencial em diversas áreas da ciência e engenharia. Métodos numéricos, como o Método das Diferenças Finitas (MDF), e ferramentas como Numba e ODEINT permitem solucionar esses problemas de forma eficiente. Neste post, serão abordados conceitos e métodos básicos para resolver Equações Diferenciais Ordinárias (EDOs) e Equações Diferenciais Parciais (EDPs).
+
+## O que é o Numba?
+O Numba é uma biblioteca Python que acelera a execução de códigos numéricos por meio da compilação Just-In-Time (JIT). Ele permite que funções Python alcancem um desempenho próximo ao de códigos compilados em linguagens como C e Fortran.
+Um tutorial introdutório sobre o Numba pode ser acessado neste link: https://colab.research.google.com/drive/1NRIOMm2Qbzp2m3Vix8_evJuFs2VYwV1a?usp=sharing.
+
+## Resolução de Equações Diferenciais Ordinárias (EDOs)
+As Equações Diferenciais Ordinárias (EDOs) são amplamente utilizadas para modelar fenômenos que envolvem a variação de grandezas no tempo.
+
+Um método comum para resolver sistemas de EDOs numericamente é o Método das Diferenças Finitas (MDF), que aproxima derivadas por meio de diferenças entre pontos de uma malha discreta.
+
+No seguinte link: https://colab.research.google.com/drive/1FX0iZf1Fwi5yF0yFiYARusRdZwwP-dPw? usp=sharing, é apresentada a aplicação desse método na resolução do modelo de Michaelis-Menten, amplamente utilizado para descrever reações químicas enzimáticas.
+
+Além do MDF, existem solvers numéricos como ODEINT, da biblioteca SciPy, e NumbaLSODA, que oferecem métodos otimizados para a solução de EDOs. A implementação desses solvers pode ser vista neste link: https://colab.research.google.com/drive/1UBqNqN_3ueFumi_0X_uBcLSU9QmcJPYW?usp=sharing, onde o modelo de Michaelis-Menten é novamente resolvido.
+
+## Resolução de Equações Diferenciais Parciais (EDPs)
+De forma análoga à resolução de EDOs, também foi abordada a solução da Equação do Calor, que é descrita matematicamente por uma Equação Diferencial Parcial (EDP).
+
+Inicialmente, o problema foi resolvido pelo Método das Diferenças Finitas (MDF). O passo a passo dessa implementação pode ser acompanhado neste link: https://colab.research.google.com/drive/1c4X5hHkic2cHZyARnB1sJy5gKO0QGcrQ?usp=sharing.
+
+Para otimizar o desempenho da solução, o Numba foi empregado tanto em CPU (aqui) quanto em GPU (aqui: https://colab.research.google.com/drive/1ejkIWqq_XtWuK11gROPjd-BzzWfwcWXO?usp=sharing).
+
+Por fim, a Equação do Calor também foi resolvida utilizando os solvers ODEINT e NumbaLSODA. A implementação pode ser encontrada neste link: https://colab.research.google.com/drive/1fbI2DG-rE91cuy-rO9LmS0lDzvhxzz9T?usp=sharing.

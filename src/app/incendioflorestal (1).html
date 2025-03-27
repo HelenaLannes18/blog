@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incêndio Florestal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+        }
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin: auto;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        ul {
+            text-align: left;
+            display: inline-block;
+        }
+        .diagram {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>Modelo: Incêndio Florestal</header>
+    <div class="container">
+        <p>Agora que já aprendemos sobre <a href="jogodavida.html">Autômatos Celulares</a>, podemos modelar um problema da vida real através da aplicação desses modelos matemáticos.</p>
+        <p>Incêndios florestais são fenômenos que envolvem a propagação descontrolada do fogo em áreas de vegetação. A problemática desses incêndios está em seu enorme poder de devastação, sendo capazes de destruir grandes áreas, afetar ecossistemas, habitats, causar danos à saúde pública e até provocar acidentes.</p>
+        <p>Modelar incêndios florestais é interessante, para compreender sua dinâmica, prever seu comportamento e até desenvolver estratégias de combate. </p>
+
+        <h3>Modelando</h3>
+        <p>Modelaremos o comportamento de um incêndio florestal, através de autômatos celulares, em que o estado de cada célula depende do estado de suas vizinhas.</p>
+        <p>Nesse modelo, adotamos uma abordagem estocástica, em que, dado um número de vizinhos em chamas, a célula possui uma probabilidade de também pegar fogo. Dessa forma, é possível definir diferentes tipos de vegetação com probabilidades distintas de propagação do incêndio (como uma mata seca, onde o fogo se espalha mais rapidamente do que em uma mata úmida).</p>
+        <p>O autômato pode ser descrito pelo diagrama abaixo, em que <strong>m</strong> é o número de vizinhos, <strong>φ</strong> é a probabilidade* da célula viva pegar fogo, <strong>η</strong> é a probabilidade do fogo se apagar, e <strong>a</strong> é um número aleatório entre 0 e 1.</p>
+        <svg class="diagram" width="400" height="200">
+            <!-- Estado célula viva -->
+            <circle cx="80" cy="100" r="30" stroke="black" stroke-width="2" fill="lightgreen"></circle>
+            <text x="60" y="105" font-size="16" font-family="Arial">Viva</text>
+        
+            <!-- Estado fogo -->
+            <circle cx="220" cy="100" r="30" stroke="black" stroke-width="2" fill="orange"></circle>
+            <text x="205" y="105" font-size="16" font-family="Arial">Fogo</text>
+        
+            <!-- Estado célula queimada -->
+            <circle cx="350" cy="100" r="30" stroke="black" stroke-width="2" fill="gray"></circle>
+            <text x="315" y="105" font-size="16" font-family="Arial">Queimada</text>
+        
+            <!-- Setas de transição -->
+            <line x1="110" y1="100" x2="190" y2="100" stroke="black" stroke-width="2"></line>
+            <polygon points="190,100 180,95 180,105" fill="black"></polygon>
+            <text x="80" y="150" font-size="14" font-family="Arial">δ(Viva, m * a > φ) → Fogo</text>
+            
+            <line x1="250" y1="100" x2="320" y2="100" stroke="black" stroke-width="2"></line>
+            <polygon points="320,100 310,95 310,105" fill="black"></polygon>
+            <text x="200" y="50" font-size="14" font-family="Arial">δ(Fogo, a > η) → Queimada</text>
+        </svg>
+
+        <p>Para modelar esse problema, foram utilizados valores inteiros para indicar diferentes estados e características. O 1 é uma célula de fogo, o 2 é uma mata úmida, o 3 é uma mata seca e o 0 é uma mata completamente queimada</p>
+        <p>O algoritmo para a atualização dos estados de cada uma dessas células é muito simples: para cada célula presente no grid é chamada a função update passando a célula atual e seus vizinhos. Dentro dessa função é feita a soma dos vizinhos em chamas (que possuem valor 1, nesse caso) e de acordo com esse valor são realizadas as transições.</p>
+
+        <!-- function update(cell, neighbors) {
+            const nNeighbors = neighbors.filter(val => val === 1).reduce((sum, val) => sum + val, 0);
+            
+
+            if (cell === 1)
+            {
+                // Fogo
+                if(Math.random() > 0.98)
+                {
+                    // Fogo apaga e vira solo queimado
+                    return 0;
+                }
+            }
+            else if(cell === 2)
+            {
+                //Mata úmida (viva)
+                if(nNeighbors * Math.random() > 2.5)//aqui
+                {
+                    //Começa a pegar fogo
+                    return 1;
+                }
+            }
+            else if(cell === 3)
+            {
+                //Mata seca
+                if(nNeighbors * Math.random() > 1.2) //aqui
+                {
+                    //Começa a pegar fogo
+                    return 1;
+                }
+            }
+
+            return cell;
+        } -->
+
+        <p>Se você fizer alguma modificação no código acima, você pode observar o impacto dessas modificações no quadro abaixo. Sugiro que modifique os valores de φ e de η destacados pelos comentários para ver o impacto dessas constantes na propagação do fogo pelo ambiente. </p>
+        <p>A representação a seguir, foi implementada utilizando <a href="https://get.webgl.org/">WebGL</a> (caso ela se encontre "travada" ou finalizada, recarregue a página ou troque de navegador).</p>
+        <canvas id="glcanvas" width="600" height="400"></canvas>
+
+        <p>* Para os olhos mais atentos, <strong>φ</strong> na verdade não é a probabilidade da transição visto que ela pode assumir valores maiores do que 1. Na verdade ela é a probabilidade de transição x uma constante de dificuldade de combustão. Quanto maior esse valor, mais células em chamas são necessárias para que seja possível transitar entre mata viva e mata em chamas, dificultando o fogo de espalhar.  </p>
+        
+    </div>
+    <script>
+        // Define o tamanho da matriz
+        const rows = 50;
+        const cols = 50;
+
+        let matrix = [];
+
+        // Inicializa o WebGL
+        function main() {
+            const canvas = document.getElementById('glcanvas');
+            canvas.width = 800;
+            canvas.height = 800;
+            
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        
+            // Define os shaders
+            const vsSource = `
+                attribute vec2 aVertexPosition;
+
+                void main() {
+                    gl_Position = vec4(aVertexPosition, 0.0, 1.0);
+                }
+            `;
+
+            const fsSource = `
+            precision mediump float;
+
+                uniform vec4 uColor; // Cor do quadrado
+
+                void main() {
+                    gl_FragColor = uColor;
+                }
+            `;
+
+            const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vsSource);
+            const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+            const shaderProgram = gl.createProgram();
+            gl.attachShader(shaderProgram, vertexShader);
+            gl.attachShader(shaderProgram, fragmentShader);
+            gl.linkProgram(shaderProgram);
+
+            gl.useProgram(shaderProgram);
+
+
+            function generateMatrix() {
+                matrix = Array.from({ length: rows }, () => Array(cols).fill(0));
+                
+                const riverWidth = 2;  // Define a largura do rio (número de colunas ao redor da diagonal)
+            
+                for (let i = 0; i < rows; i++) {
+                    for (let j = 0; j < cols; j++) {
+                        // Preenche a diagonal principal e as colunas próximas a ela
+                        if (Math.abs(j - i) <= riverWidth) {
+                            matrix[i][j] = 4;  // Colunas na diagonal principal e próximas a ela
+                        }
+                        else if (j > i) {
+                            matrix[i][j] = 2;
+                        }
+                        // Preenche as colunas à esquerda da diagonal principal
+                        else if (j < i) {
+                            matrix[i][j] = 3;
+                        }
+
+
+                        if (Math.abs(j - (rows - i - 1)) <= riverWidth) {
+                            matrix[i][j] = 3;  // Colunas na diagonal secundária e próximas a ela
+                        }
+                    }
+                    matrix[i][0] = 1;
+
+                }
+                
+
+
+            }
+            
+            generateMatrix();
+            animate(gl, shaderProgram);
+        }
+
+        // Função para compilar shaders
+        function compileShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error('Erro ao compilar shader: ' + gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+            return shader;
+        }
+
+        function update(cell, neighbors) {
+            const nNeighbors = neighbors.filter(val => val === 1).reduce((sum, val) => sum + val, 0);
+            
+
+            if (cell === 1)
+            {
+                // Fogo
+                if(Math.random() > 0.98)
+                {
+                    // Fogo apaga e vira solo queimado
+                    return 0;
+                }
+            }
+            else if(cell === 2)
+            {
+                //Mata úmida (viva)
+                if(nNeighbors * Math.random() > 2.5)
+                {
+                    //Começa a pegar fogo
+                    return 1;
+                }
+            }
+            else if(cell === 3)
+            {
+                //Mata seca
+                if(nNeighbors * Math.random() > 1.2)
+                {
+                    //Começa a pegar fogo
+                    return 1;
+                }
+            }
+
+            return cell;
+        }
+
+        function updateMatrix(matrix) {
+            let newMatrix = matrix.map(arr => [...arr]);
+
+            for (let i = 1; i < rows - 1; i++) {
+                for (let j = 1; j < cols - 1; j++) {
+                    let neighbors = [
+                        matrix[i-1][j-1], matrix[i-1][j], matrix[i-1][j+1],
+                        matrix[i][j-1], matrix[i][j+1],
+                        matrix[i+1][j-1], matrix[i+1][j], matrix[i+1][j+1]
+                    ];
+                    newMatrix[i][j] = update(matrix[i][j], neighbors);
+                }
+            }
+
+            // Atualiza os contornos (bordas) da matriz
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    // Ignora as células internas, já atualizadas
+                    if (i > 0 && i < rows - 1 && j > 0 && j < cols - 1) {
+                        continue;
+                    }
+
+                    // Definir vizinhos para as bordas
+                    let neighbors = [];
+                    if (i > 0) neighbors.push(matrix[i-1][j]); // Célula acima
+                    if (i < rows - 1) neighbors.push(matrix[i+1][j]); // Célula abaixo
+                    if (j > 0) neighbors.push(matrix[i][j-1]); // Célula à esquerda
+                    if (j < cols - 1) neighbors.push(matrix[i][j+1]); // Célula à direita
+
+                    // Atualiza as bordas com a função `update`
+                    newMatrix[i][j] = update(matrix[i][j], neighbors);
+                }
+            }
+            return newMatrix;
+        }
+
+
+        // Função de animação
+        function animate(gl, shaderProgram) {
+
+            const cores = [
+                [0.0, 0.0, 0.0, 1.0],    // 0: Preto
+                [1.0, 0.5, 0.0, 1.0],    // 1: Laranja
+                [0.0, 0.5, 0.0, 1.0],    // 2: Verde
+                [0.96, 0.87, 0.70, 1.0], // 3: Bege
+                [0.3, 0.5, 0.8, 1.0]    //4: Azul goiaba
+            ];
+
+            
+            // Limpa a tela
+            gl.clearColor(0.0, 0.0, 0.0, 1.0); // Fundo preto
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            
+            matrix = updateMatrix(matrix)
+            for (let i = -24; i < 24; i++) {
+                for (let j = -24; j < 24; j++) {
+                    if(matrix[i+25][j+25] > 0)
+                    {
+                        drawSquare(gl, shaderProgram, i / 25 + 0.01, j / 25+0.01, cores[matrix[i+25][j+25]]);
+                    }
+                }
+            }
+
+            // Define um intervalo de 100ms (10 FPS)
+            setTimeout(() => {
+                requestAnimationFrame(() => animate(gl, shaderProgram));
+            }, 100); // Ajuste o valor para controlar a velocidade}
+        }
+
+        function drawSquare(gl, shaderProgram, offsetX, offsetY, color) {
+
+            console.log(`Desenhando quadrado em (${offsetX}, ${offsetY}) com cor`, color);
+
+            const size = 0.02;
+            const vertices = new Float32Array([
+                -size + offsetX,  size + offsetY,
+                -size + offsetX, -size + offsetY,
+                size + offsetX, -size + offsetY,
+                size + offsetX,  size + offsetY
+            ]);
+
+            const vertexBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+            const vertexPosition = gl.getAttribLocation(shaderProgram, 'aVertexPosition');
+            gl.enableVertexAttribArray(vertexPosition);
+            gl.vertexAttribPointer(vertexPosition, 2, gl.FLOAT, false, 0, 0);
+
+            const indices = new Uint16Array([0, 1, 2, 0, 2, 3]);
+            const indexBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+            // 🔥 Define a cor antes de desenhar
+            const colorLocation = gl.getUniformLocation(shaderProgram, 'uColor');
+            gl.uniform4f(colorLocation, color[0], color[1], color[2], color[3]); // RGBA
+
+            gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+        }
+
+
+        main();
+
+    </script>
+</body>
+</html>
